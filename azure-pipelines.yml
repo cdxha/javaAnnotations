@@ -17,4 +17,4 @@ steps:
 - task: Bash@3
   inputs:
     targetType: 'inline'
-    script:  /opt/sca/scancentral -sscurl $(var.sscurl) -ssctoken $(var.ssctoken) start -bt none -upload --application $(Build.Repository.Name) --application-version $(Build.SourceBranchName) -uptoken $(var.uptoken) 
+    script:  /opt/sca/bin/scancentral -sscurl $(var.sscurl) -ssctoken $(var.ssctoken) start -bt none -upload --application $(Build.Repository.Name) --application-version $(Build.SourceBranchName) -uptoken $(var.uptoken) 
