@@ -10,7 +10,7 @@ trigger:
 pool:
   name: Fortify
 steps:
-- task: PowerShell@2
+- task: Bash@3
   inputs:
     targetType: 'inline'
     script: 'java -jar opt/fortify-api-client-latest.jar create -n $(Build.Repository.Name) -v $(Build.SourceBranchName)'
