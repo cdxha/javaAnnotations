@@ -34,8 +34,6 @@ steps:
               sleep 30
           fi
       done
-      
       java -jar /opt/fortify-api-client-latest.jar waitArtifactProcess -n $(Build.Repository.Name) -version $(Build.SourceBranchName)
-      reportfortify=java -jar /opt/fortify-api-client-latest.jar legacyReport -n $(Build.Repository.Name) -version $(Build.SourceBranchName))
-      
+      reportfortify=java -jar /opt/fortify-api-client-latest.jar legacyReport -n $(Build.Repository.Name) -version $(Build.SourceBranchName)
       echo $reportfortify
