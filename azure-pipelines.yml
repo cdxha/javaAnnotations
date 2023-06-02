@@ -34,10 +34,9 @@ steps:
 #               sleep 30
 #           fi
 #       done
-- task: Bash@3
+- task: CmdLine@2
   displayName: 'Debricked scan'
   inputs:
-    targetType: 'inline'
     script: |
       echo "starting scan debricked"
       env > env.list
