@@ -41,5 +41,5 @@ steps:
       echo "starting scan debricked"
       env > env.list
       # docker run -v $HOME:$HOME --env DEBRICKED_TOKEN_3=$(VAR_DEBRICKED) --entrypoint "/azure-devops.sh" debricked/debricked-scan:latest
-      docker run -it --rm -v $PWD:/data debricked/debricked-cli debricked:scan henriqueaguiar22@hotmail.com debrickedt3cn0l0gi4! $(Build.Repository.Name) $(Build.BuildNumber) null cli
+      docker run -t --rm -v $PWD:/data debricked/debricked-cli debricked:scan henriqueaguiar22@hotmail.com debrickedt3cn0l0gi4! $(Build.Repository.Name) $(Build.BuildNumber) null cli
  
