@@ -34,6 +34,11 @@ steps:
               sleep 30
           fi
       done
-      java -jar /opt/fortify-api-client-latest.jar waitArtifactProcess -n $(Build.Repository.Name) -version $(Build.SourceBranchName)
-      reportfortify=java -jar /opt/fortify-api-client-latest.jar legacyReport -n $(Build.Repository.Name) -version $(Build.SourceBranchName)
-      echo $reportfortify
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      env > env.list
+      docker run -v $HOME:$HOME --env-file ./env.list --entrypoint "/azure-devops.sh" debricked/debricked-scan:latest
+  env:
+    var.debricked: $(DEBRICKED_TOKEN_3)
