@@ -35,9 +35,11 @@ steps:
 #           fi
 #       done
 - task: Bash@3
+  displayName: 'Debricked scan'
   inputs:
     targetType: 'inline'
     script: |
+      echo "starting scan debricked"
       env > env.list
       sudo docker run -v $HOME:$HOME --env-file ./env.list --entrypoint "/azure-devops.sh" debricked/debricked-scan:latest
   env:
