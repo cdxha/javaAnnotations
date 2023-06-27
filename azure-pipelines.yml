@@ -65,8 +65,8 @@ steps:
       # done
       # java -jar /opt/fortify-api-client/fortify-api-client-latest.jar waitArtifactProcess -n $(Build.Repository.Name) -v $(Build.SourceBranchName) | grep -v "sun.reflect.Reflection.getCallerClass" 
         reportfortify=$(java -jar /opt/fortify-api-client/fortify-api-client-latest.jar legacyReport -n $(Build.Repository.Name) -v $(Build.SourceBranchName) | grep -v "sun.reflect.Reflection.getCallerClass")
-        echo $reportfortify
-        # reportfortify=$(java -jar /opt/fortify-api-client/fortify-api-client-latest.jar legacyReport -n $(Build.Repository.Name) -v $(Build.SourceBranchName) | grep -v "sun.reflect.Reflection.getCallerClass") echo -e "\033[33m \n ${reportfortify}  \n \033[0m"
+        echo -e "\033[33m \n ${reportfortify}  \n \033[0m"
+        # reportfortify=$(java -jar /opt/fortify-api-client/fortify-api-client-latest.jar legacyReport -n $(Build.Repository.Name) -v $(Build.SourceBranchName) | grep -v "sun.reflect.Reflection.getCallerClass") 
         # if expr ${reportfortify//[[:space:]]/} : ".*0Criticas(Novas)*." & ${reportfortify//[[:space:]]/} : ".*0Altas(Novas)*."; then
         #   echo "##vso[task.logissue type=success;] Analise Fortify SAST concluída com sucesso!"
         # else
