@@ -46,30 +46,30 @@ steps:
   inputs:
      targetType: 'inline'
      script: |  
-      var=$(/opt/sca/bin/scancentral -sscurl $(var.sscurl) -ssctoken $(var.ssctoken) start -bt none -upload --application  $(Build.Repository.Name) --application-version  $(Build.SourceBranchName) -uptoken $(var.uptoken)) && jobtoken=${var:(-36)} && echo jobtoken: $jobtoken
-      while true; do
-        jobStatus=$(java -Djdk.callerSensitive=true -jar /opt/fortify-api-client/fortify-api-client-latest.jar checkCloudscanStatus -jt $jobtoken | grep -v "sun.reflect.Reflection.getCallerClass")    
-        jobStatus=$(echo ${jobStatus} | cut -d\[ -f3 | cut -d\] -f1 )
-        echo "jobStatus: ${jobStatus}"
-          if [[ "${jobStatus}" =~ "COMPLETED" ]]; then
-            echo "Cloudscan Job completed."
-            sleep 10
-            break
-          elif [[ "${jobStatus}" =~ "ERROR|FAULTED|CANCELED|FAILED" ]]; then
-            echo "Erro ao executar o scan. Current status: $jobStatus. Consulte os logs do Fortify para obter mais detalhes."
-            exit
-          else
-            echo "Aguardando o processamento status: ${jobStatus}"
-            sleep 20
-          fi
-      done
-      java -jar /opt/fortify-api-client/fortify-api-client-latest.jar waitArtifactProcess -n $(Build.Repository.Name) -v $(Build.SourceBranchName) | grep -v "sun.reflect.Reflection.getCallerClass" 
+      # var=$(/opt/sca/bin/scancentral -sscurl $(var.sscurl) -ssctoken $(var.ssctoken) start -bt none -upload --application  $(Build.Repository.Name) --application-version  $(Build.SourceBranchName) -uptoken $(var.uptoken)) && jobtoken=${var:(-36)} && echo jobtoken: $jobtoken
+      # while true; do
+      #   jobStatus=$(java -Djdk.callerSensitive=true -jar /opt/fortify-api-client/fortify-api-client-latest.jar checkCloudscanStatus -jt $jobtoken | grep -v "sun.reflect.Reflection.getCallerClass")    
+      #   jobStatus=$(echo ${jobStatus} | cut -d\[ -f3 | cut -d\] -f1 )
+      #   echo "jobStatus: ${jobStatus}"
+      #     if [[ "${jobStatus}" =~ "COMPLETED" ]]; then
+      #       echo "Cloudscan Job completed."
+      #       sleep 10
+      #       break
+      #     elif [[ "${jobStatus}" =~ "ERROR|FAULTED|CANCELED|FAILED" ]]; then
+      #       echo "Erro ao executar o scan. Current status: $jobStatus. Consulte os logs do Fortify para obter mais detalhes."
+      #       exit
+      #     else
+      #       echo "Aguardando o processamento status: ${jobStatus}"
+      #       sleep 20
+      #     fi
+      # done
+      # java -jar /opt/fortify-api-client/fortify-api-client-latest.jar waitArtifactProcess -n $(Build.Repository.Name) -v $(Build.SourceBranchName) | grep -v "sun.reflect.Reflection.getCallerClass" 
       
-      java -jar /opt/fortify-api-client/fortify-api-client-latest.jar legacyReport -n $(Build.Repository.Name) -v $(Build.SourceBranchName) 
-      # reportfortify=$(java -jar /opt/fortify-api-client/fortify-api-client-latest.jar legacyReport -n $(Build.Repository.Name) -v $(Build.SourceBranchName) | grep -v "sun.reflect.Reflection.getCallerClass") echo -e "\033[33m \n ${reportfortify}  \n \033[0m" 
-        # if expr ${reportfortify//[[:space:]]/} : ".*0Criticas(Novas)*."; then
-        #    echo "##vso[task.logissue type=success;] Analise Fortify SAST concluída com sucesso!"
-        #  else
-        #    echo "##vso[task.logissue type=error;] Error na Analise SAST encontrado problemas críticos de seguranca na análise Fortify /n Projeto:$(Build.Repository.Name) /n Branch:$(Build.SourceBranchName)"
-        #    exit 1
-        # fi
+      reportfortify=$(java -jar /opt/fortify-api-client/fortify-api-client-latest.jar legacyReport -n $(Build.Repository.Name) -v $(Build.SourceBranchName) | grep -v "sun.reflect.Reflection.getCallerClass") echo -e "\033[33m \n ${reportfortify}  \n \033[0m" 
+        if expr ${reportfortify//[[:space:]]/} : ".*0Criticas(Novas)*." && expr ${reportfortify//[[:space:]]/} : ".*0Altas(Novas)*." && expr ${reportfortify//[[:space:]]/} : ".*0Criticas(Legado)*." && expr ${reportfortify//[[:space:]]/} : ".*0Altas(Legado)*."; then
+          echo "##vso[task.logissue type=success;] Analise Fortify SAST concluída com sucesso!"
+        elif expr ${reportfortify//[[:space:]]/} : ".*0Criticas(Novas)*."; then
+        else
+          echo "##vso[task.logissue type=error;] Error na Analise SAST encontrado problemas críticos de seguranca na análise Fortify /n Projeto:$(Build.Repository.Name) /n Branch:$(Build.SourceBranchName)"
+          exit 1
+        fi
