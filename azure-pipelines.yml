@@ -66,8 +66,8 @@ steps:
       # java -jar /opt/fortify-api-client/fortify-api-client-latest.jar waitArtifactProcess -n $(Build.Repository.Name) -v $(Build.SourceBranchName) | grep -v "sun.reflect.Reflection.getCallerClass" 
         reportfortify=$(java -jar /opt/fortify-api-client/fortify-api-client-latest.jar legacyReport -n $(Build.Repository.Name) -v $(Build.SourceBranchName) | grep -v "sun.reflect.Reflection.getCallerClass")
         echo -e "\033[33m \n ${reportfortify}  \n \033[0m"
-        if expr ${reportfortify//[[:space:]]/} : ".*0Criticas(Novas)*."; then
+        if expr ${reportfortify//[[:space:]]/} : ".*0Criticas(Novas)*." "&" ${reportfortify//[[:space:]]/} : ".*0Altas(Novas)*."; then
           echo "##vso[task.logissue type=success;] Analise Fortify SAST concluída com sucesso!"
         else
-          echo "##vso[task.logissue type=error;] Error na Analise SAST encontrado problemas críticos de seguranca na análise Fortify /n Projeto:$(Build.Repository.Name) /n Branch:$(Build.SourceBranchName)"
+          echo "##vso[task.logissue type=error;] Error na Analise SAST encontrado problemas críticos de seguranca na análise Fortify /n Projeto: $(Build.Repository.Name) /n Branch: $(Build.SourceBranchName)"
         fi
